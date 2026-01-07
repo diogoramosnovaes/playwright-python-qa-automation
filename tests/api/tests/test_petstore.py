@@ -1,8 +1,10 @@
 import random
+import pytest
 from tests.api.clients.petstore_client import PetStoreClient
 from tests.api.models.pet_model import Pet
 
-def test_criar_buscar_pet(api_request_context):
+@pytest.mark.asyncio
+async def test_criar_buscar_pet(api_request_context):
     client = PetStoreClient(api_request_context)
 
     pet = Pet(
@@ -11,19 +13,21 @@ def test_criar_buscar_pet(api_request_context):
         status="available"
     )
 
-    response_create = client.create_pet(pet)
+    response_create = await client.create_pet(pet)
     assert response_create.status == 200
 
-    response_get = client.get_pet(pet.id)
+    response_get = await client.get_pet(pet.id)
     assert response_get.status == 200
 
-    pet_response = Pet.from_response(response_get.json())
+    data = await response_get.json()
+    pet_response = Pet.from_response(data)
 
     assert pet_response.name == pet.name
     assert pet_response.status == pet.status
 
 
-def test_atualizar_pet(api_request_context):
+@pytest.mark.asyncio
+async def test_atualizar_pet(api_request_context):
     client = PetStoreClient(api_request_context)
 
     pet = Pet(
@@ -33,22 +37,26 @@ def test_atualizar_pet(api_request_context):
     )
 
     # Criação
-    client.create_pet(pet)
+    response_create = await client.create_pet(pet)
+    assert response_create.status == 200
 
     # Atualização
     pet.name = "Updated"
     pet.status = "sold"
 
-    response_update = client.update_pet(pet)
-
+    response_update = await client.update_pet(pet)
     assert response_update.status == 200
 
-    pet_response = Pet.from_response(response_update.json())
+    # ⚠️ json() é async no Playwright
+    data = await response_update.json()
+
+    pet_response = Pet.from_response(data)
+
     assert pet_response.status == "sold"
     assert pet_response.name == "Updated"
 
-
-def test_deletar_pet(api_request_context):
+@pytest.mark.asyncio
+async def test_deletar_pet(api_request_context):
     client = PetStoreClient(api_request_context)
 
     pet = Pet(
@@ -57,10 +65,10 @@ def test_deletar_pet(api_request_context):
         status="available"
     )
 
-    client.create_pet(pet)
+    await client.create_pet(pet)
 
-    response_delete = client.delete_pet(pet.id)
+    response_delete = await client.delete_pet(pet.id)
     assert response_delete.status == 200
 
-    response_get = client.get_pet(pet.id)
+    response_get = await client.get_pet(pet.id)
     assert response_get.status == 404
