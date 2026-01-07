@@ -3,9 +3,8 @@ import pytest
 import os
 from datetime import datetime
 from config import get_base_url
-from config import get_api_url
 
-# 🧪 Hook para capturar screenshot ao final de cada teste
+
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     outcome = yield
@@ -24,13 +23,13 @@ def pytest_runtest_makereport(item, call):
             page.screenshot(path=caminho, full_page=True)
 
 
-# 🌍 Base URL configurável por ambiente
+
 @pytest.fixture(scope="session")
 def base_url():
     return get_base_url()
 
 
-# 🌐 Navegador único para toda a execução
+
 @pytest.fixture(scope="session")
 def browser():
     with sync_playwright() as p:
@@ -39,7 +38,6 @@ def browser():
         browser.close()
 
 
-# 🧪 Página isolada para cada teste
 @pytest.fixture
 def page(browser):
     context = browser.new_context()
@@ -47,7 +45,6 @@ def page(browser):
 
     yield page
 
-    # O fechamento ocorre somente após o hook executar
     context.close()
 
 
