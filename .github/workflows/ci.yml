@@ -20,8 +20,10 @@ jobs:
         pip install -r requirements.txt
     - name: Ensure browsers are installed
       run: python -m playwright install --with-deps
-    - name: Run your tests
-      run: pytest --tracing=retain-on-failure
+    - name: Run API tests
+      run: pytest tests/api -q
+    - name: Run UI tests
+      run: pytest tests/ui -q
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
