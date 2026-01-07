@@ -6,13 +6,13 @@ class LoginPage:
         self.login_button = page.locator('[data-test="login-button"]')
         self.error = page.locator('h3[data-test="error"]')
 
-    def open(self, base_url):
-        self.page.goto(base_url)
+    async def open(self, base_url):
+        await self.page.goto(base_url)
 
-    def login(self, user, password):
-        self.username.fill(user)
-        self.password.fill(password)
-        self.login_button.click()
+    async def login(self, user, password):
+        await self.username.fill(user)
+        await self.password.fill(password)
+        await self.login_button.click()
 
-    def get_error_message(self):
-        return self.error.inner_text()
+    async def get_error_message(self):
+        return await self.error.inner_text()

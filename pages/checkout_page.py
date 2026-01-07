@@ -8,14 +8,14 @@ class CheckoutPage:
         self.finish_button = page.locator('[data-test="finish"]')
         self.success_message = page.locator('.complete-header')
 
-    def fill_form(self, first, last, zip):
-        self.first_name.fill(first)
-        self.last_name.fill(last)
-        self.postal_code.fill(zip)
-        self.continue_button.click()
+    async def fill_form(self, first, last, zip):
+        await self.first_name.fill(first)
+        await self.last_name.fill(last)
+        await self.postal_code.fill(zip)
+        await self.continue_button.click()
 
-    def finish(self):
-        self.finish_button.click()
+    async def finish(self):
+        await self.finish_button.click()
 
-    def success_text(self):
-        return self.success_message.inner_text()
+    async def success_text(self):
+        return await self.success_message.inner_text()
