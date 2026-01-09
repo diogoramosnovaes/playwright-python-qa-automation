@@ -19,8 +19,7 @@ async def test_criar_buscar_pet(api_request_context):
     response_get = await client.get_pet(pet.id)
     assert response_get.status == 200
 
-    data = await response_get.json()
-    pet_response = Pet.from_response(data)
+    pet_response = Pet.from_response(response_get.json())
 
     assert pet_response.name == pet.name
     assert pet_response.status == pet.status
