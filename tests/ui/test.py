@@ -1,74 +1,70 @@
-def test_saucedemo(page):
-    page.goto("https://www.saucedemo.com/")
-    assert "Swag Labs" in page.title()
+import pytest
+from pages.login_page import LoginPage
+from pages.products_page import ProductsPage
+from pages.cart_page import CartPage
+from pages.checkout_page import CheckoutPage
 
 
-def test_login_sucesso(page,base_url):
-    page.goto(base_url)
-    page.fill('[data-test="username"]', "standard_user")
-    page.fill('[data-test="password"]', "secret_sauce")
-    page.click('[data-test="login-button"]')
-    titulo = page.locator('.title').inner_text()
-    assert "Products" in titulo
+@pytest.mark.asyncio
+async def test_saucedemo(page):
+    await page.goto("https://www.saucedemo.com/")
+    assert "Swag Labs" in await page.title()
 
 
-def test_login_sucesso2(page, base_url):
-    page.goto(base_url)
+@pytest.mark.asyncio
+async def test_login_sucesso(page, base_url):
+    login = LoginPage(page)
+    products = ProductsPage(page)
 
-    login = page.locator('[data-test="username"]')
-    senha = page.locator('[data-test="password"]')
-    botao = page.locator('[data-test="login-button"]')
+    await login.open(base_url)
+    await login.login("standard_user", "secret_sauce")
 
-    login.fill("standard_user")
-    senha.fill("secret_sauce")
-    botao.click()
-
-    titulo = page.locator('.title')
-    titulo.wait_for()
-
-    assert titulo.inner_text() == "Products"
+    assert await products.is_loaded()
 
 
-def test_login_invalido(page):
-    page.goto("https://www.saucedemo.com/")
+@pytest.mark.asyncio
+async def test_login_invalido(page, base_url):
+    login = LoginPage(page)
 
-    page.fill('[data-test="username"]', "invalid_user")
-    page.fill('[data-test="password"]', "invalid_pass")
-    page.click('[data-test="login-button"]')
+    await login.open(base_url)
+    await login.login("invalid_user", "invalid_pass")
 
-    erro = page.locator('h3[data-test="error"]').inner_text()
-    assert "Epic sadface" in erro
+    assert "Epic sadface" in await login.get_error_message()
 
-def test_adicionar_produtos_carrinho(page):
-    page.goto("https://www.saucedemo.com/")
-    page.fill('[data-test="username"]', "standard_user")
-    page.fill('[data-test="password"]', "secret_sauce")
-    page.click('[data-test="login-button"]')
 
-    # Adicionando produtos
-    page.click('[data-test="add-to-cart-sauce-labs-backpack"]')
-    page.click('[data-test="add-to-cart-sauce-labs-bike-light"]')
+@pytest.mark.asyncio
+async def test_adicionar_produtos_carrinho(page, base_url):
+    login = LoginPage(page)
+    products = ProductsPage(page)
 
-    # Validar contador
-    contador = page.locator('.shopping_cart_badge').inner_text()
-    assert contador == "2"
+    await login.open(base_url)
+    await login.login("standard_user", "secret_sauce")
 
-def test_checkout_completo(page):
-    page.goto("https://www.saucedemo.com/")
-    page.fill('[data-test="username"]', "standard_user")
-    page.fill('[data-test="password"]', "secret_sauce")
-    page.click('[data-test="login-button"]')
+    await products.add_product("add-to-cart-sauce-labs-backpack")
+    await products.add_product("add-to-cart-sauce-labs-bike-light")
 
-    page.click('[data-test="add-to-cart-sauce-labs-backpack"]')
-    page.click('[class="shopping_cart_link"]')
+    assert await products.cart_count() == "2"
 
-    page.click('[data-test="checkout"]')
-    page.fill('[data-test="firstName"]', "Diogo")
-    page.fill('[data-test="lastName"]', "QA")
-    page.fill('[data-test="postalCode"]', "12345")
 
-    page.click('[data-test="continue"]')
-    page.click('[data-test="finish"]')
+@pytest.mark.asyncio
+async def test_checkout_completo(page, base_url):
+    login = LoginPage(page)
+    products = ProductsPage(page)
+    cart = CartPage(page)
+    checkout = CheckoutPage(page)
 
-    mensagem = page.locator('.complete-header').inner_text()
-    assert "Thank you for your order!" in mensagem
+    await login.open(base_url)
+    await login.login("standard_user", "secret_sauce")
+
+    await products.add_product("add-to-cart-sauce-labs-backpack")
+    await products.add_product("add-to-cart-sauce-labs-bike-light")
+
+    assert await products.cart_count() == "2"
+
+    await cart.open()
+    await cart.checkout()
+
+    await checkout.fill_form("Diogo", "QA", "12345")
+    await checkout.finish()
+
+    assert "Thank you for your order!" in await checkout.success_text()
