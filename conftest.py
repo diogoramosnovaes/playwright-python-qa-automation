@@ -11,7 +11,7 @@ def base_url():
 def browser():
     with sync_playwright() as p:
         browser = p.chromium.launch(
-            headless=False,
+            headless=True,
             slow_mo=500
         )
         yield browser
