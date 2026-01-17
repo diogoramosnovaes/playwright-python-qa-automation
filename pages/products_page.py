@@ -1,15 +1,19 @@
 class ProductsPage:
     def __init__(self, page):
         self.page = page
-        self.title = page.locator('.title')
-        self.cart_badge = page.locator('.shopping_cart_badge')
+        self.title = page.locator(".title")
+        self.cart_badge = page.locator(".shopping_cart_badge")
 
-    async def is_loaded(self):
-        await self.title.wait_for()
-        return await self.title.inner_text() == "Products"
+    def is_loaded(self) -> bool:
+        self.title.wait_for()
+        return self.title.inner_text() == "Products"
 
-    async def add_product(self, product_test_id):
-        await self.page.click(f'[data-test="{product_test_id}"]')
+    def add_product(self, product_test_id: str):
+        button = self.page.locator(f'[data-test="{product_test_id}"]')
+        button.wait_for()
+        button.click()
 
-    async def cart_count(self):
-        return await self.cart_badge.inner_text()
+    def cart_count(self) -> str:
+        self.cart_badge.wait_for()
+        return self.cart_badge.inner_text()
+

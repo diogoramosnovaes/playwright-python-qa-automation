@@ -1,10 +1,13 @@
 class CartPage:
     def __init__(self, page):
         self.page = page
+        self.cart_link = page.locator(".shopping_cart_link")
         self.checkout_button = page.locator('[data-test="checkout"]')
 
-    async def open(self):
-        await self.page.click('.shopping_cart_link')
+    def open(self):
+        self.cart_link.wait_for()
+        self.cart_link.click()
 
-    async def checkout(self):
-        await self.checkout_button.click()
+    def checkout(self):
+        self.checkout_button.wait_for()
+        self.checkout_button.click()

@@ -1,21 +1,26 @@
 class CheckoutPage:
     def __init__(self, page):
         self.page = page
-        self.first_name = page.locator('[data-test="firstName"]')
-        self.last_name = page.locator('[data-test="lastName"]')
-        self.postal_code = page.locator('[data-test="postalCode"]')
+
+        # Selectors
+        self.first_name_input = page.locator('[data-test="firstName"]')
+        self.last_name_input = page.locator('[data-test="lastName"]')
+        self.postal_code_input = page.locator('[data-test="postalCode"]')
         self.continue_button = page.locator('[data-test="continue"]')
         self.finish_button = page.locator('[data-test="finish"]')
         self.success_message = page.locator('.complete-header')
 
-    async def fill_form(self, first, last, zip):
-        await self.first_name.fill(first)
-        await self.last_name.fill(last)
-        await self.postal_code.fill(zip)
-        await self.continue_button.click()
+    def fill_form(self, first_name: str, last_name: str, postal_code: str):
+        self.first_name_input.wait_for()
+        self.first_name_input.fill(first_name)
+        self.last_name_input.fill(last_name)
+        self.postal_code_input.fill(postal_code)
+        self.continue_button.click()
 
-    async def finish(self):
-        await self.finish_button.click()
+    def finish(self):
+        self.finish_button.wait_for()
+        self.finish_button.click()
 
-    async def success_text(self):
-        return await self.success_message.inner_text()
+    def success_text(self) -> str:
+        self.success_message.wait_for()
+        return self.success_message.inner_text()
