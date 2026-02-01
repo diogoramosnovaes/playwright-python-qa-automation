@@ -24,12 +24,12 @@ def page(browser, base_url):
     page = context.new_page()
     yield page
     context.close()
-
+    
 @pytest.fixture(scope="session")
 def api():
     with sync_playwright() as p:
         context = p.request.new_context(
-            base_url="https://petstore.swagger"
+            base_url="https://petstore.swagger.io"
         )
         yield context
         context.dispose()
