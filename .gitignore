@@ -1,0 +1,19 @@
+# ===== Python =====
+__pycache__/
+*.pyc
+.env
+
+# ===== Virtual Environment =====
+.venv/
+env/
+
+# ===== Playwright / Pytest =====
+.playwright/
+screenshots/
+reports/
+reportsAPI/
+htmlcov/
+
+# ===== IDEs =====
+.idea/
+.vscode/

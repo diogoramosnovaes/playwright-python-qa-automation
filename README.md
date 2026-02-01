@@ -1,0 +1,43 @@
+
+
+Projeto de **automação de testes de API e UI** utilizando **Python, Pytest e Playwright**, com execução local e integração contínua via **GitHub Actions**.
+
+Este repositório foi criado com foco em **boas práticas de QA**, organização por camadas (Page Object Model) e uso profissional em pipelines CI.
+
+---
+ Tecnologias Utilizadas
+
+- 🐍 **Python 3.12**
+- 🧪 **Pytest**
+- 🎭 **Playwright (UI e API)**
+- 🔄 **Pytest-Asyncio**
+- 📊 **Relatórios HTML**
+- ⚙️ **GitHub Actions (CI)**
+
+---
+Estrutura do Projeto
+
+playwright-python-qa-automation/
+│
+├── tests/
+│   ├── api/                 # Testes de API
+│   └── ui/                  # Testes de UI (SauceDemo)
+│
+├── pages/                   # Page Objects (UI)
+│   ├── login_page.py
+│   ├── products_page.py
+│   ├── cart_page.py
+│   └── checkout_page.py
+│
+├── reports/                 # Relatórios UI
+├── reportsAPI/              # Relatórios API
+│
+├── screenshots/             # Evidências de falha
+│
+├── .github/workflows/
+│   └── ci.yml               # Pipeline CI
+│
+├── pytest.ini
+├── requirements.txt
+├── .gitignore
+└── README.md
