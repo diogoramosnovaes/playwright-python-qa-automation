@@ -40,31 +40,3 @@ def api():
         ctx = p.request.new_context(base_url="https://petstore.swagger.io")
         yield ctx
         ctx.dispose()
-
-
-# @pytest.hookimpl(hookwrapper=True)
-# def pytest_runtest_makereport(item, call):
-#     outcome = yield
-#     result = outcome.get_result()
-#
-#     if result.when == "call" and result.failed:
-#         page = item.funcargs.get("async_page")
-#
-#         if page:
-#             os.makedirs("screenshots", exist_ok=True)
-#
-#             nome = item.nodeid.replace("::", "_").replace("/", "_")
-#             data = datetime.now().strftime("%Y%m%d_%H%M%S")
-#             caminho = f"screenshots/{nome}_{data}.png"
-#
-#             import asyncio
-#
-#             try:
-#                 loop = asyncio.get_running_loop()
-#             except RuntimeError:
-#                 loop = asyncio.new_event_loop()
-#                 asyncio.set_event_loop(loop)
-#
-#             loop.run_until_complete(
-#                 page.screenshot(path=caminho, full_page=True)
-#             )
